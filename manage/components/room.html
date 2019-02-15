@@ -1,0 +1,398 @@
+<style type="text/css">
+    .alert.alert-primary {
+        word-wrap: break-word;
+    }
+
+    .config-title {
+        width: 200px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 20px;
+    }
+</style>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Rooms</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-room">New</button>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success" role="alert">
+    <div><span class="config-title">Room Entry Point:</span><span id="room-url" class="config-value"></span></div>
+    <div><span class="config-title">Room Broadcast Entry Point:</span><span id="room-broadcast-url" class="config-value"></span></div>
+</div>
+<div id="grid-room" class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th data-column-id="name">Name</th>
+                <th data-column-id="sessionId">Session ID</th>
+                <th data-column-id="createTime">Create Time</th>
+                <th>Commands</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div id="new-room" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newRoomModalLabel">New Room</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="room-name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createRoom()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="room-detail" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="room-detail-label"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="room-detail-label">Manage Room</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="room-detail-name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="room-detail-name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="room-detail-session-id" class="col-sm-2 col-form-label">SessionId</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="room-detail-session-id">
+                        </div>
+                    </div>
+                </form>
+                <form>
+                    <div class="form-group row">
+                        <label for="room-detail-user" class="col-sm-2 col-form-label">UserName</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="room-detail-user">
+                        </div>
+                        <button type="button" class=" btn btn-primary mb-2" onclick="createToken()">Create New Token</button>
+                    </div>
+                </form>
+                <div id="grid-token" class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th data-column-id="user">User</th>
+                                <th data-column-id="role">Role</th>
+                                <th data-column-id="token" style="display: none">Token</th>
+                                <th data-column-id="expireTime">Expire Time</th>
+                                <th>Commands</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-primary" role="alert">
+                    Select any token item to get room access url.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var roomLiveUrl = Config.HomeDomain + 'index.html';
+    var roomBroadCastUrl = Config.HomeDomain + 'view.html?room={room}';
+    var roomServiceAPI = Config.serviceBasicUrl + 'api/room/';
+
+    var editRoomTemplate =
+        '&nbsp;<button type="button" class="btn btn-primary btn-sm" onclick="showRoomDetails(this.parentNode.parentNode)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
+    var deleteRoomTemplate =
+        '&nbsp;<button type="button" class="btn btn-primary btn-sm" onclick="removeRoom(this.parentNode.parentNode)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
+    var extendTokenTemplate =
+        '&nbsp;<button title="extend expired time" type="button" class="btn btn-primary btn-sm" onclick="extendToken(this.parentNode.parentNode)"><i class="fa fa-clock-o" aria-hidden="true"></i></button>';
+    var deleteTokenTemplate =
+        '&nbsp;<button type="button" class="btn btn-primary btn-sm" onclick="removeToken(this.parentNode.parentNode)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
+    var copyRoomAccessUrlTemplate =
+        '&nbsp;<button title="get url" type="button" class="btn btn-primary btn-sm" onclick="getMeetAccessUrl(this.parentNode.parentNode)"><i class="fa fa-link" aria-hidden="true"></i></i></button>';
+    var currentRoomDetails = null;
+
+    $('#room-url').html(roomLiveUrl);
+    $('#room-broadcast-url').html(roomBroadCastUrl);
+
+    Util.checkAuth();
+
+    listRoom();
+
+
+    $('#grid-room').on('click', 'tr', (e) => roomTrClickHandler(e.currentTarget));
+    // $('#grid-token').on('click', 'tr', (e) => getMeetAccessUrl(e.currentTarget));
+    $('#new-room').on('show.bs.modal', function () {
+        $('#room-name').val('');
+    })
+
+    autoCompleteControl();
+
+    function autoCompleteControl() {
+        new autoComplete({
+            selector: '#room-detail-user',
+            minChars: 1,
+            source: function (term, response) {
+                Util.doFetch(Config.serviceBasicUrl + 'api/user')
+                    .then(data => {
+                        let choices = data.map(value => value.username);
+
+                        let matches = [];
+                        for (i = 0; i < choices.length; i++)
+                            if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                        response(matches);
+                    })
+                    .catch(err => alert('Error ' + err && err.message));
+            }
+        });
+    }
+
+    function listRoom() {
+        Util.doFetch(roomServiceAPI)
+            .catch(err => console.error('Error ' + err))
+            .then(data => {
+                Util.generateTabelHTML("grid-room", data, [editRoomTemplate, deleteRoomTemplate], function (column,
+                    value, parent) {
+                    if (column != 'name') {
+                        return "<td><span  data-toggle=\"tooltip\" title=\"" + value + "\">" + Util.truncateText(
+                            value) + "</span></td>";
+                    } else {
+                        return "<td>" + value + "</td>";
+                    }
+                });
+            });
+    }
+
+    function createRoom() {
+        var room = $('#room-name').val();
+        if (!validator(room)) {
+            return;
+        }
+
+        var userName = window.localStorage.getItem('username');
+        var expireTime = ''
+        if (!validator({
+            room,
+            userName
+        })) {
+            return;
+        }
+
+        Util.doFetch(roomServiceAPI, {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify({
+                room
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(() => {
+                $('#new-room').modal('hide');
+                Util.doFetch(roomServiceAPI + '/' + room + '/generateToken', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        user: userName,
+                        expireTime
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(data => {
+                        listRoom();
+                    })
+                    .catch(err => alert('Error ' + err && err.message))
+            })
+            .catch(err => alert('Error ' + err && err.message))
+    }
+
+    function removeRoom(trEle) {
+        let room = Util.getCurrentTrColumnValue(trEle, 'name');
+        Util.doFetch(roomServiceAPI + '/' + room, {
+            method: 'Delete'
+        })
+            .then(listRoom)
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function removeToken(trEle) {
+        let room = $('#room-detail-name').val();
+        let token = Util.getCurrentTrColumnValue(trEle, 'token');
+        token = token.substring(token.length - 100); // only need to take last 20 charactors
+        Util.doFetch(roomServiceAPI + '/' + room + '/token/' + encodeURIComponent(token), {
+            method: 'Delete'
+        })
+            .then(() => {
+                loadRoomDetails(room);
+            })
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function extendToken(trEle) {
+        let room = $('#room-detail-name').val();
+        let token = Util.getCurrentTrColumnValue(trEle, 'token');
+        token = token.substring(token.length - 100); // only need to take last 20 charactors
+        Util.doFetch(roomServiceAPI + '/' + room + '/extendtoken/' + encodeURIComponent(token), {
+            method: 'Post'
+        })
+            .then(() => {
+                loadRoomDetails(room);
+            })
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function loadRoomDetails(room) {
+        $('#room-detail-user').val('');
+        $('#room-detail .alert.alert-primary').text('');
+        $('#room-detail .alert.alert-primary').hide();
+        Util.doFetch(roomServiceAPI + '/' + room)
+            .then(data => {
+                currentRoomDetails = data;
+                $('#room-detail-name').val(data.name);
+                $('#room-detail-session-id').val(data.sessionId);
+                Util.generateTabelHTML("grid-token", data.tokens, [copyRoomAccessUrlTemplate, extendTokenTemplate, deleteTokenTemplate],
+                    function (column, value, parent) {
+                        return `<td style="${column === 'token' ? "display:none" : ""}">${value}</td>`;
+                    });
+                $('#room-detail').modal('show')
+            })
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function roomTrClickHandler (trEle) {
+        let room = Util.getCurrentTrColumnValue(trEle, 'name');
+        var castRoom = roomBroadCastUrl.replace('{room}', room);
+        $('#room-broadcast-url').html(castRoom);
+    }
+
+    function createToken() {
+        let room = $('#room-detail-name').val();
+        let userName = $('#room-detail-user').val();
+        let expireTime = ''
+        if (!validator({
+            room,
+            userName
+        })) {
+            return;
+        }
+        Util.doFetch(roomServiceAPI + '/' + room + '/generateToken', {
+            method: 'POST',
+            body: JSON.stringify({
+                user: userName,
+                expireTime
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                loadRoomDetails(room);
+            })
+            .catch(err => alert('Error ' + err && err.message))
+    }
+
+    function showRoomDetails(trEle) {
+        let room = Util.getCurrentTrColumnValue(trEle, 'name');
+        loadRoomDetails(room);
+    }
+
+    function getMeetAccessUrl(trEle) {
+        if (currentRoomDetails) {
+            let token = Util.getCurrentTrColumnValue(trEle, 'token');
+            let accessOptions = {
+                apiKey: currentRoomDetails.apiKey,
+                sessionId: currentRoomDetails.sessionId,
+                p2p: currentRoomDetails.p2p,
+                token
+            }
+
+            let roomUrl = $("#room-url").html() + '?' + serialize(accessOptions);
+            $('#room-detail .alert.alert-primary').text(roomUrl);
+            $('#room-detail .alert.alert-primary').show();
+            copyTextToClipboard(roomUrl);
+        }
+    }
+
+    function validator(obj) {
+        let isValid = true;
+        if (!obj) {
+            isValid = false;
+        }
+        if (typeof obj === 'object') {
+            return Object.keys(obj).every(k => obj[k]);;
+        }
+        if (!isValid) {
+            alert("value can't be empty.");
+        }
+        return isValid;
+    }
+
+    function serialize(obj) {
+        var str = [];
+        for (var p in obj)
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        return str.join("&");
+    }
+
+    function copyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+
+        textArea.style.padding = 0;
+
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+
+        // Avoid flash of white box if rendered for any reason.
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'copy successful' : 'unsuccessful';
+            console.log(msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+
+    //# sourceURL=manage/components/room.html
+</script>

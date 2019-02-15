@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.ico">
+
+  <title>Dashboard For EnglishTutor</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./dist/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="./dist/css/auto-complete.css" rel="stylesheet">
+  <!-- <link href="./dist/css/dataTables.bootstrap.min.css" rel="stylesheet"> -->
+
+  <!-- Custom styles for this template -->
+  <link href="dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">MyEnglishTutor</a>
+    <!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="#" id="sign-out-button">Sign out</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id='menu-bar' class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" data-command='room'>
+                <i class="fa fa-database" aria-hidden="true"></i>
+                Rooms
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-command='user'>
+                <i class="fa fa-users" aria-hidden="true"></i>
+                Users
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-command='archive'>
+                <i class="fa fa-file-video-o" aria-hidden="true"></i>
+                Archives
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <main id="content" role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      </main>
+    </div>
+  </div>
+
+  <div id="loading">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+  </div>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="./dist/js/jquery.min.js"></script>
+  <script src="./dist/js/bootstrap.min.js"></script>
+  <script src="./dist/js/auto-complete.min.js"></script>
+  <script src="../config.js"></script>
+  <script src="util.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

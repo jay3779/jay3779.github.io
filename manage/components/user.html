@@ -1,0 +1,293 @@
+<style type="text/css">
+    .alert.alert-primary {
+        word-wrap: break-word;
+    }
+</style>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Users</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-user">New</button>
+        </div>
+    </div>
+</div>
+<div id="grid-user" class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th data-column-id="username">UserName</th>
+                <th data-column-id="password">Password</th>
+                <th data-column-id="createTime">Create Time</th>
+                <th data-column-id="phone">Phone</th>
+                <th data-column-id="email">Email</th>
+                <th data-column-id="userRole">Role</th>
+                <th>Commands</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div id="new-user" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newUserModalLabel">New User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">UserName:</label>
+                        <input type="text" class="form-control" id="user-register-username">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Password:</label>
+                        <input type="text" class="form-control" id="user-register-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="user-register-userRole">Role:</label>
+                        <select id="user-register-userRole" class="form-control">
+                            <option value="admin">Admin</option>
+                            <option value="student" selected>Student</option>
+                            <option value="teacher">Teacher</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createUser()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="user-detail" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="user-detail-label"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="user-detail-label">Manage user</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="user-detail-username" class="col-sm-2 col-form-label">UserName</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="user-detail-username">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="user-detail-createtime" class="col-sm-2 col-form-label">CreateTime</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="user-detail-createtime">
+                        </div>
+                    </div>
+                </form>
+                <form>
+                    <div class="form-group row">
+                        <label for="user-detail-password" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="user-detail-password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="user-detail-email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-7">
+                            <input type="email" class="form-control" id="user-detail-email">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="user-detail-phone" class="col-sm-2 col-form-label">Phone</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="user-detail-phone">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="user-detail-userRole" class="col-sm-2 col-form-label">Role:</label>
+                        <div class="col-sm-7">
+                            <select id="user-detail-userRole" class="form-control">
+                                <option value="admin">Admin</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class=" btn btn-primary btn-block mb-2 col-sm-2" style="margin: 0 auto" onclick="updateUserInfo()">Update</button>
+                </form>
+                <div class="alert alert-primary" role="alert">
+                    Select any token item to get user access url.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var userServiceAPI = Config.serviceBasicUrl + 'api/user/';
+    var editUserTemplate =
+        '&nbsp;<button type="button" class="btn btn-primary btn-sm" onclick="showUserDetails(this.parentNode.parentNode)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
+    var deleteUserTemplate =
+        '&nbsp;<button type="button" class="btn btn-primary btn-sm" onclick="removeUser(this.parentNode.parentNode)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
+    var copyUserAccessUrlTemplate =
+        '&nbsp;<button title="get url" type="button" class="btn btn-primary btn-sm" onclick="getMeetAccessUrl(this.parentNode.parentNode)"><i class="fa fa-link" aria-hidden="true"></i></i></button>';
+    var currentUserDetails = null;
+
+    Util.checkAuth();
+
+    listUser();
+
+    // $('#grid-user').on('click', 'tr', (e) => showUserDetails(e.currentTarget));
+    // $('#grid-token').on('click', 'tr', (e) => getMeetAccessUrl(e.currentTarget));
+    $('#new-user').on('show.bs.modal', function () {
+        $('#user-register-username').val('');
+    })
+
+    function listUser() {
+        Util.doFetch(userServiceAPI)
+            .catch(err => console.error('Error ' + err))
+            .then(data => {
+                Util.generateTabelHTML("grid-user", data, [editUserTemplate, deleteUserTemplate], function (column,
+                    value, parent) {
+                    if (column !== 'username') {
+                        return "<td><span  data-toggle=\"tooltip\" title=\"" + value + "\">" + Util.truncateText(
+                            value || '') + "</span></td>";
+                    } else {
+                        return "<td>" + value + "</td>";
+                    }
+                });
+            });
+    }
+
+    function createUser() {
+        var username = $('#user-register-username').val();
+        var password = $('#user-register-password').val();
+        var userRole = $('#user-register-userRole').val();
+        if (!validator({
+                username,
+                password,
+                userRole
+            })) {
+            return;
+        }
+        Util.doFetch(userServiceAPI, {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify({
+                    username,
+                    password,
+                    userRole
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(() => {
+                $('#new-user').modal('hide');
+                listUser();
+            })
+            .catch(err => alert('Error ' + err && err.message))
+    }
+
+    function updateUserInfo() {
+        let username = $('#user-detail-username').val();
+        let createtime = $('#user-detail-createtime').val();
+        let password = $('#user-detail-password').val();
+        let email = $('#user-detail-email').val();
+        let userRole = $('#user-detail-userRole').val();
+        let phone = $('#user-detail-phone').val();
+        if (!validator({
+                username,
+                password,
+                userRole
+            })) {
+            return;
+        }
+        Util.doFetch(userServiceAPI + '/' + username, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    createtime: createtime,
+                    password: password,
+                    email: email || '',
+                    userRole: userRole,
+                    phone: phone || ''
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(data => {
+                $('#user-detail').modal('hide');
+                Util.checkAuth();
+                listUser();
+            })
+            .catch(err => alert('Error ' + err && err.message))
+    }
+
+    function removeUser(trEle) {
+        let username = Util.getCurrentTrColumnValue(trEle, 'username');
+        Util.doFetch(userServiceAPI + '/' + username, {
+                method: 'Delete'
+            })
+            .then(() => {
+                if (username === window.localStorage.getItem('username') && window.localStorage.getItem('userRole') ===
+                    'admin') {
+                    window.location.href = 'login.html';
+                }
+                listUser();
+            })
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function loadUserDetails(user) {
+        $('#user-detail .alert.alert-primary').text('');
+        $('#user-detail .alert.alert-primary').hide();
+        Util.doFetch(userServiceAPI + '/' + user)
+            .then(data => {
+                currentUserDetails = data;
+                $('#user-detail-username').val(data.username);
+                $('#user-detail-createtime').val(data.createTime);
+                $('#user-detail-password').val(data.password);
+                $('#user-detail-email').val(data.email);
+                $('#user-detail-userRole').val(data.userRole);
+                $('#user-detail-phone').val(data.phone);
+                $('#user-detail').modal('show')
+            })
+            .catch(err => alert('Error ' + err && err.message));
+        return false;
+    }
+
+    function showUserDetails(trEle) {
+        let user = Util.getCurrentTrColumnValue(trEle, 'username');
+        loadUserDetails(user);
+    }
+
+    function validator(obj) {
+        let isValid = true;
+        if (!obj) {
+            isValid = false;
+        }
+        if (typeof obj === 'object') {
+            return Object.keys(obj).every(k => obj[k]);;
+        }
+        if (!isValid) {
+            alert("value can't be empty.");
+        }
+        return isValid;
+    }
+
+    function serialize(obj) {
+        var str = [];
+        for (var p in obj)
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        return str.join("&");
+    }
+
+    //# sourceURL=manage/components/user.html
+</script>

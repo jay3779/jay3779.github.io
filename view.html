@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Myenglishtutor class view</title>
+  <link rel="stylesheet" href="./manage/dist/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./manage/dist/css/bootstrap.min.css">
+  <script src="https://static.opentok.com/v2/js/opentok.min.js" type="text/javascript" defer></script>
+  <style type="text/css">
+    .main-container {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #262422;
+    }
+
+    .video-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-around;
+
+    }
+
+    .video-container.wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .banner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+    }
+
+    .banner .text {
+      color: #0099cc;
+      font-size: 34px;
+      font-family: 'Yellowtail', cursive;
+      letter-spacing: 1px;
+    }
+
+    .banner .text.red {
+      color: #E04E4E;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+
+    @media screen and (max-width: 650px) {
+      .banner .text {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main" class="main-container">
+    <div id="videoContainer" class="video-container">
+      <div id="banner" class="banner">
+        <span id="bannerText" class="text">Waiting for Broadcast to Begin</span>
+      </div>
+      <div id="hostDivider" class="hidden"></div>
+    </div>
+  </div>
+</body>
+<script src="./manage/dist/js/jquery.min.js"></script>
+<script src="./manage/dist/js/bootstrap.min.js"></script>
+<script src="./view.js"></script>
+<script src="./config.js"></script>
+<script>
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) { return decodeURIComponent(pair[1]); }
+    }
+    return (false);
+  }
+  $(function () {
+    var room = getQueryVariable('room');
+    getViewerToken(room)
+      .then((credentials) => {
+        var props = { connectionEventsSuppressed: true };
+        var session = OT.initSession(credentials.apiKey, credentials.sessionId, props);
+
+        session.connect(credentials.token, function (error) {
+          if (error) {
+            console.log(error);
+          } else {
+            setEventListeners(session);
+            updateBanner('active');
+          }
+        });
+      })
+      .catch((err) => {
+        $('#bannerText').html('Error:' + err.message);
+      });
+  });
+
+</script>
+
+</html>
