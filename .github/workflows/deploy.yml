@@ -1,0 +1,66 @@
+name: Build & Deploy Blog
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Extract post metadata from commits
+        id: extract-posts
+        run: |
+          node scripts/extract-commits.js > posts/index.json
+          cat posts/index.json
+
+      - name: Generate OG preview images
+        run: |
+          node scripts/generate-og-images.js
+
+      - name: Build blog index
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+      - name: Success notification
+        if: success()
+        run: |
+          echo "✅ Blog deployed successfully!"
+          echo "Published at: ${{ steps.deployment.outputs.page_url }}"
