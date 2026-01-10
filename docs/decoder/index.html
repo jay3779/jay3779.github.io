@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, viewport-fit=cover">
+<meta name="description" content="itty bitty decoder - self-hosted">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em'><text y='.9em'>📦</text></svg>" id="favicon">
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: #fff;
+}
+#iframe {
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  z-index: 1000;
+}
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.hidden { display: none !important; }
+</style>
+<meta id="themeColor" name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta id="themeColorDark" name="theme-color" content="#16161D" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div id="loader">
+  <div class="spinner"></div>
+  <p>Loading decoder...</p>
+</div>
+<iframe id="iframe" class="hidden"></iframe>
+
+<script>
+// Load pako for decompression
+const pakoScript = document.createElement('script');
+pakoScript.src = 'https://cdn.jsdelivr.net/npm/pako@2/dist/pako.min.js';
+pakoScript.onload = decodeFromHash;
+pakoScript.onerror = () => {
+  document.getElementById('loader').innerHTML = '<h1>Error</h1><p>Failed to load decoder library</p>';
+};
+document.head.appendChild(pakoScript);
+
+function base64ToUint8Array(b64) {
+  const bstr = atob(b64.replace(/[^A-Za-z0-9+/=]/g, ''));
+  const bytes = new Uint8Array(bstr.length);
+  for (let i = 0; i < bstr.length; i++) {
+    bytes[i] = bstr.charCodeAt(i);
+  }
+  return bytes;
+}
+
+function decodeFromHash() {
+  const hash = window.location.hash.substring(1);
+  const loader = document.getElementById('loader');
+  const iframe = document.getElementById('iframe');
+  
+  if (!hash) {
+    loader.innerHTML = '<h1>itty bitty Decoder</h1><p>No content specified. Share a link with content hash.</p>';
+    return;
+  }
+
+  try {
+    const parts = hash.split('/');
+    let title = 'Content';
+    let compressedB64 = hash;
+
+    if (parts.length > 1) {
+      title = decodeURIComponent(parts[0].replace(/\+/g, ' '));
+      compressedB64 = parts.slice(1).join('/');
+    }
+
+    const compressedBytes = base64ToUint8Array(compressedB64);
+    
+    let decompressed;
+    try {
+      decompressed = pako.inflate(compressedBytes, { to: 'string' });
+    } catch(e) {
+      try {
+        decompressed = pako.ungzip(compressedBytes, { to: 'string' });
+      } catch(e2) {
+        throw new Error('Decompression failed: ' + e2.message);
+      }
+    }
+
+    document.title = title + ' - itty bitty';
+    loader.classList.add('hidden');
+    iframe.classList.remove('hidden');
+    
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(decompressed);
+    iframeDoc.close();
+
+  } catch (error) {
+    loader.innerHTML = '<h1>Decode Error</h1><p style="color:red;">' + error.message + '</p>';
+  }
+}
+
+window.addEventListener('hashchange', decodeFromHash);
+</script>
+</body>
+</html>

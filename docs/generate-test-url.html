@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test URL Generator</title>
+<style>
+body {
+  font-family: monospace;
+  padding: 20px;
+  background: #f5f5f5;
+}
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
+  font-family: monospace;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.output {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+  word-break: break-all;
+  border: 1px solid #ddd;
+}
+.copy-btn {
+  background: #28a745;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Test URL Generator</h1>
+  <p>This page generates a compressed test URL for the decoder.</p>
+  
+  <textarea id="content" placeholder="Enter HTML content here..."></textarea>
+  <input type="text" id="title" placeholder="Enter post title" value="Lorem Ipsum Test" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 4px;">
+  
+  <button onclick="generateURL()">Generate Test URL</button>
+  
+  <div id="output" class="output" style="display: none;">
+    <strong>Generated URL:</strong><br>
+    <code id="url"></code><br>
+    <button class="copy-btn" onclick="copyURL()">Copy URL</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pako@2/dist/pako.min.js"></script>
+<script>
+// Lorem Ipsum test HTML
+const loremHTML = `<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorem Ipsum Decoder Test</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+  color: #333;
+  background: #f9f9f9;
+}
+h1 {
+  color: #0066cc;
+  border-bottom: 2px solid #0066cc;
+  padding-bottom: 10px;
+}
+h2 {
+  color: #333;
+  margin-top: 30px;
+}
+.meta {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+code {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+ul {
+  padding-left: 20px;
+}
+li {
+  margin-bottom: 8px;
+}
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 30px 0;
+}
+.footer {
+  text-align: center;
+  color: #999;
+  font-size: 0.85em;
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+<h1>Lorem Ipsum Decoder Test</h1>
+<div class="meta">A test post to verify the self-hosted decoder works correctly.</div>
+
+<p><strong>Lorem ipsum</strong> dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<h2>Section Two</h2>
+
+<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+
+<h2>Key Features Verified</h2>
+
+<p>If you're reading this, the decoder is working! ✅</p>
+
+<p>This test post confirms that:</p>
+<ul>
+<li>HTML content is properly compressed using DEFLATE</li>
+<li>Decompression works in the self-hosted decoder</li>
+<li>The iframe rendering is functional</li>
+<li>CSS styling is preserved after decompression</li>
+<li>Self-hosting on GitHub Pages is successful</li>
+</ul>
+
+<h2>Why Self-Hosting Matters</h2>
+
+<p>By self-hosting the decoder on your GitHub Pages site, you gain:</p>
+<ul>
+<li><strong>Independence</strong> - No reliance on external decoder services</li>
+<li><strong>Permanence</strong> - Posts remain readable even if external services go down</li>
+<li><strong>Privacy</strong> - Your URLs and content aren't sent to external servers</li>
+<li><strong>Control</strong> - You can customize the decoder to match your site's design</li>
+</ul>
+
+<h2>Technical Details</h2>
+
+<p>The decoder uses the pako JavaScript library to handle gzip decompression in the browser. The compressed content is embedded in the URL hash, making URLs self-contained and shareable.</p>
+
+<hr>
+
+<div class="footer">
+  <p>Test post for itty-bitty blog decoder verification</p>
+  <p>Self-hosted decoder on GitHub Pages</p>
+</div>
+
+</body>
+</html>`;
+
+// Pre-fill the textarea
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('content').value = loremHTML;
+  generateURL();
+});
+
+function generateURL() {
+  const content = document.getElementById('content').value;
+  const title = document.getElementById('title').value;
+  
+  if (!content.trim()) {
+    alert('Please enter content');
+    return;
+  }
+  
+  // Compress using pako (same as deflate)
+  const compressed = pako.deflate(content);
+  
+  // Convert to base64url (URL-safe base64)
+  let base64 = btoa(String.fromCharCode.apply(null, compressed));
+  base64 = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  
+  // Build URL
+  const titleEncoded = encodeURIComponent(title);
+  const decoderURL = `https://jay3779.github.io/decoder.html#${titleEncoded}/${base64}`;
+  
+  // Display
+  document.getElementById('url').textContent = decoderURL;
+  document.getElementById('output').style.display = 'block';
+  
+  // Show stats
+  console.log('Original size:', content.length, 'bytes');
+  console.log('Compressed size:', compressed.length, 'bytes');
+  console.log('Compression ratio:', ((1 - compressed.length / content.length) * 100).toFixed(1) + '%');
+}
+
+function copyURL() {
+  const url = document.getElementById('url').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    alert('URL copied to clipboard!');
+  });
+}
+</script>
+</body>
+</html>
