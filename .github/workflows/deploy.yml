@@ -47,20 +47,13 @@ jobs:
       - name: Build blog index
         run: npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      - name: Copy index to root
+        run: cp docs/index.html ./index.html
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './docs'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-
-      - name: Success notification
-        if: success()
+      - name: Commit and push updated index
         run: |
-          echo "✅ Blog deployed successfully!"
-          echo "Published at: ${{ steps.deployment.outputs.page_url }}"
+          git config user.name "Blog Bot"
+          git config user.email "bot@blog.local"
+          git add index.html posts/index.json
+          git diff --cached --exit-code || git commit -m "docs: auto-update blog index"
+          git push origin main
