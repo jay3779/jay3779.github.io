@@ -13,29 +13,35 @@ const path = require('path');
  */
 function generateIndexHTML(posts) {
   const postsHTML = posts
-    .map(post => `
+    .map(post => {
+      // Ensure post uses local decoder
+      const hash = post.url.includes('#') ? post.url.split('#')[1] : post.url;
+      const localUrl = `/decoder.html#${hash}`;
+      
+      return `
     <article class="post-card">
-      <h2><a href="${post.url}" target="_blank">${post.title}</a></h2>
+      <h2><a href="${localUrl}">${post.title}</a></h2>
       <p class="description">${post.description || 'No description'}</p>
       <p class="meta">
         <time>${post.date}</time>
         <span class="compression">${post.compressedSize} bytes</span>
       </p>
       <div class="share-buttons">
-        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(post.url)}&text=${encodeURIComponent(post.title)}" 
+        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent('https://jay3779.github.io' + localUrl)}&text=${encodeURIComponent(post.title)}" 
            class="share-btn twitter" target="_blank">
-          Share on Twitter
+          Twitter
         </a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(post.url)}" 
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://jay3779.github.io' + localUrl)}" 
            class="share-btn linkedin" target="_blank">
-          Share on LinkedIn
+          LinkedIn
         </a>
-        <button class="share-btn copy" onclick="navigator.clipboard.writeText('${post.url}')">
-          Copy URL
+        <button class="share-btn copy" data-url="https://jay3779.github.io${localUrl}">
+          Copy Link
         </button>
       </div>
     </article>
-    `)
+    `;
+    })
     .join('\n');
 
   return `<!DOCTYPE html>
@@ -164,6 +170,42 @@ function generateIndexHTML(posts) {
       font-size: 1.8em;
       margin-bottom: 10px;
     }
+    
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 350px;
+    }
+    .toast {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+      min-height: 50px;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast-icon { font-size: 20px; }
+    .toast-message { color: #333; font-weight: 500; font-size: 0.95em; }
+    .toast.fade-out {
+      animation: slideOut 0.3s ease-out forwards;
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(120%); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -177,6 +219,35 @@ function generateIndexHTML(posts) {
       ${postsHTML || '<div class="empty-state"><h2>No posts yet</h2><p>Check back soon!</p></div>'}
     </div>
   </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    function showToast(message, icon = '✅') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('copy')) {
+        const url = e.target.getAttribute('data-url');
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('Link copied to clipboard!');
+        });
+      }
+    });
+
+    // Handle toast messages if redirected back from elsewhere
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('shared')) showToast('Post shared successfully!');
+  </script>
 </body>
 </html>`;
 }

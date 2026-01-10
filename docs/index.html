@@ -136,7 +136,6 @@
       gap: 10px;
       max-width: 350px;
     }
-    
     .toast {
       background: white;
       border-radius: 8px;
@@ -148,76 +147,18 @@
       animation: slideIn 0.3s ease-out;
       min-height: 50px;
     }
-    
-    .toast.success {
-      border-left: 4px solid #22c55e;
-    }
-    
-    .toast.success .toast-icon::before {
-      content: "✓";
-      color: #22c55e;
-      font-weight: bold;
-    }
-    
-    .toast.error {
-      border-left: 4px solid #ef4444;
-    }
-    
-    .toast.error .toast-icon::before {
-      content: "!";
-      color: #ef4444;
-      font-weight: bold;
-    }
-    
-    .toast-icon {
-      font-size: 20px;
-      font-weight: bold;
-    }
-    
-    .toast-message {
-      flex: 1;
-      color: #333;
-      font-size: 0.95em;
-    }
-    
-    .toast-close {
-      background: none;
-      border: none;
-      color: #999;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 0;
-      line-height: 1;
-    }
-    
-    .toast-close:hover {
-      color: #333;
-    }
-    
     @keyframes slideIn {
-      from {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
-    
-    @keyframes slideOut {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-    }
-    
-    .toast.removing {
+    .toast-icon { font-size: 20px; }
+    .toast-message { color: #333; font-weight: 500; font-size: 0.95em; }
+    .toast.fade-out {
       animation: slideOut 0.3s ease-out forwards;
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(120%); opacity: 0; }
     }
   </style>
 </head>
@@ -231,18 +172,28 @@
     <div class="posts">
       
     <article class="post-card">
-      <div class="meta"><time datetime="2026-01-10">January 10, 2026</time> <span class="compression">DEFLATE (795 bytes)</span></div>
       <h2><a href="/decoder.html#Lorem%20Ipsum%20Decoder%20Verification/eJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9">Lorem Ipsum Decoder Verification</a></h2>
       <p class="description">A test post to verify that the self-hosted decoder is correctly decompressing HTML content from URL fragments.</p>
+      <p class="meta">
+        <time>2026-01-10</time>
+        <span class="compression">795 bytes</span>
+      </p>
       <div class="share-buttons">
-        <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20post!%20https://jay3779.github.io/decoder.html#Lorem%20Ipsum%20Decoder%20Verification/eJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9" target="_blank" class="share-btn twitter">Twitter</a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://jay3779.github.io/decoder.html#Lorem%20Ipsum%20Decoder%20Verification/eJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uFFuu6dhDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9" target="_blank" class="share-btn linkedin">LinkedIn</a>
-        <button class="share-btn copy" data-url="https://jay3779.github.io/decoder.html#Lorem%20Ipsum%20Decoder%20Verification/eJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9">Copy Link</button>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Lorem%2520Ipsum%2520Decoder%2520Verification%2FeJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9&text=Lorem%20Ipsum%20Decoder%20Verification" 
+           class="share-btn twitter" target="_blank">
+          Twitter
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Lorem%2520Ipsum%2520Decoder%2520Verification%2FeJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9" 
+           class="share-btn linkedin" target="_blank">
+          LinkedIn
+        </a>
+        <button class="share-btn copy" data-url="https://jay3779.github.io/decoder.html#Lorem%20Ipsum%20Decoder%20Verification/eJxtVNtu40YM_RVWfbUt20GNRJYFFE22XWBRFEh23-kZyiI6t8xwHKdBgL70L_rUT9svKUaygw3aNw2HOjznkJx2EGu6diDUXWtJENSAMZHsqs8PH-bX1Tnq0NKuOjI9BR-lAuWdkJNd9cRahp2mIyuaj4cZsGNhNPOk0NButVhWXSsshrpPPpKFjyFlCw-UpK2neJvk2VC39_r5pfdO5j1aNs9NQpfmiSL3W4unCb-5Xi7DaWsxHtg1S8AsfhtQa3aHZl2uDDuaD8SHQZrVYrNV3vjYfH91dfU6rF7Op-Vys1Fqu_dRU5zvvYi3zTqcIHnDGi73Z-BLwmoZTq_D-mWqPhcfmqsSWhSXLtCbzWY7qkj8BzXLxQ3ZM923OuWfbF4u6IZ6mYJDPGOPuLB8bevJm7aemlQ86tph9T9eDquu1XwEZTClXVUoVd2X4h4rFPYOgk8CvY-QyPTzwSchDZqU1xTbWvOxa0NpRvTucC7ApUAhMcZAF4mQWAAtyawMQiIlJDkCag6cFLsDkGFZwH1B90Cck_UahGzwEdgp1qyzE8gCBvc-EpBM0AQWDw4BDT9mXMBnAXJsATVYLh9Hcox2Bo-ZEzifJGYNdKKoWCaR2Ri0yk_IJYkTl0ojJAegExCC8tZ67ScBjxll0dahyL8twJiFgGOOdFbMDiKFSAM5TZGlBI7e5CAoBMeiFyglAsXGZHsRQxn6fGAUcIUWBIyMkuMC7k6KglAuZjoBrxSSQgGVA2uU8kdpWPSsyckMUvGLHahsAhb14PueFSNoShTLrfWm0MBiE2ugdHY320nbsH43DW09rIvgjz08-wwKi0TUIAOnGchAl8mAJx9_T9_B17__GnGy6VrD3U_TGwCcipkhFvkanlgGuL378OnHh7u2Njym3tIlozRowBDIpaJmH_1TKrN3Trz_Zi69g59Zfsl7-A0PlN5yfvVAJ6Ho0LwxdESa9JRSF35D7NoA4-rsKqGTzNHwwTWKnFC8PAk3NzfvNvX6B7LVu82S4uK4Nl___Afu_7s2cHxnaejaelrRenxa_wW2Ae-9">
+          Copy Link
+        </button>
       </div>
     </article>
+    
 
-    <div class="posts">
-      
     <article class="post-card">
       <h2><a href="/decoder.html#Longer%20Lorem%20Ipsum/eJx9VEuO2zAM3RfoHd4B0jlFuygw6KbtARiJkxCVREUk08ztC9qeway6EWxaovh-ftZx4YVnXdzxfVp0_GLzz58-f9prstWqNl0wcVBnP6HoMC7OHgtUZYoVGRdwE3_CT66oCpawrhXOfeqCjCJVagxHOBqddTHY99aMTpdBoCa3oCf8dvCQDqrokg93HkL9hFuIYaj5igp-8Cri5KID0Rr1onvn3CQmedPWUib4ASYU7V2r7gBuQf6UUL9mVwpnyIrFB1wZWDwXX3lUXuJZuGuL6eSMe4IFmzGKtPZGEoMDL3ERcoycCZOWkMd6wrdH4ekcyeRwaCnEhRwlplTyPKEDc6lUHn6CJVkyUKJNSujQlxcpQqhsvPJr15ZjUHIkFWwHtdE3YClFOCYvm3nQxRCjMrQPMYg5Y5CHgdc6FH6H2EGlhNFweUfXb8FoFHWvnuDq1JFOoclr04gpN8m0nJkYdIa0ppBx5-FJ0T3p3IZhzz0moFWu4lxccWZyYtwl1yrFaWeCH7NJobNu0H5w190keVP_OPYthN7ebXetTV4JdKXM0Jq18E2oJJrrfuiwRYzcmZaUA7eB1TYJ1mY3_nhfHhEMtiIx_JguOZi6lm6evQX1VGdz8BuXR7i2m_-TsNN7xHbTfZg3_TKi790lDF2rHImjPXL_DVw_Etc3pRZ9VH_D8euaIj08I5BRNsedWrqVDX4lR9v_IFPNDX91_UHRtbh4e03v-pUh7q9fzrni3PQCe7W9_z-8rKWh">Longer Lorem Ipsum</a></h2>
       <p class="description">Extended test with more content</p>
@@ -253,14 +204,14 @@
       <div class="share-buttons">
         <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Longer%2520Lorem%2520Ipsum%2FeJx9VEuO2zAM3RfoHd4B0jlFuygw6KbtARiJkxCVREUk08ztC9qeway6EWxaovh-ftZx4YVnXdzxfVp0_GLzz58-f9prstWqNl0wcVBnP6HoMC7OHgtUZYoVGRdwE3_CT66oCpawrhXOfeqCjCJVagxHOBqddTHY99aMTpdBoCa3oCf8dvCQDqrokg93HkL9hFuIYaj5igp-8Cri5KID0Rr1onvn3CQmedPWUib4ASYU7V2r7gBuQf6UUL9mVwpnyIrFB1wZWDwXX3lUXuJZuGuL6eSMe4IFmzGKtPZGEoMDL3ERcoycCZOWkMd6wrdH4ekcyeRwaCnEhRwlplTyPKEDc6lUHn6CJVkyUKJNSujQlxcpQqhsvPJr15ZjUHIkFWwHtdE3YClFOCYvm3nQxRCjMrQPMYg5Y5CHgdc6FH6H2EGlhNFweUfXb8FoFHWvnuDq1JFOoclr04gpN8m0nJkYdIa0ppBx5-FJ0T3p3IZhzz0moFWu4lxccWZyYtwl1yrFaWeCH7NJobNu0H5w190keVP_OPYthN7ebXetTV4JdKXM0Jq18E2oJJrrfuiwRYzcmZaUA7eB1TYJ1mY3_nhfHhEMtiIx_JguOZi6lm6evQX1VGdz8BuXR7i2m_-TsNN7xHbTfZg3_TKi790lDF2rHImjPXL_DVw_Etc3pRZ9VH_D8euaIj08I5BRNsedWrqVDX4lR9v_IFPNDX91_UHRtbh4e03v-pUh7q9fzrni3PQCe7W9_z-8rKWh&text=Longer%20Lorem%20Ipsum" 
            class="share-btn twitter" target="_blank">
-          Share on Twitter
+          Twitter
         </a>
         <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Longer%2520Lorem%2520Ipsum%2FeJx9VEuO2zAM3RfoHd4B0jlFuygw6KbtARiJkxCVREUk08ztC9qeway6EWxaovh-ftZx4YVnXdzxfVp0_GLzz58-f9prstWqNl0wcVBnP6HoMC7OHgtUZYoVGRdwE3_CT66oCpawrhXOfeqCjCJVagxHOBqddTHY99aMTpdBoCa3oCf8dvCQDqrokg93HkL9hFuIYaj5igp-8Cri5KID0Rr1onvn3CQmedPWUib4ASYU7V2r7gBuQf6UUL9mVwpnyIrFB1wZWDwXX3lUXuJZuGuL6eSMe4IFmzGKtPZGEoMDL3ERcoycCZOWkMd6wrdH4ekcyeRwaCnEhRwlplTyPKEDc6lUHn6CJVkyUKJNSujQlxcpQqhsvPJr15ZjUHIkFWwHtdE3YClFOCYvm3nQxRCjMrQPMYg5Y5CHgdc6FH6H2EGlhNFweUfXb8FoFHWvnuDq1JFOoclr04gpN8m0nJkYdIa0ppBx5-FJ0T3p3IZhzz0moFWu4lxccWZyYtwl1yrFaWeCH7NJobNu0H5w190keVP_OPYthN7ebXetTV4JdKXM0Jq18E2oJJrrfuiwRYzcmZaUA7eB1TYJ1mY3_nhfHhEMtiIx_JguOZi6lm6evQX1VGdz8BuXR7i2m_-TsNN7xHbTfZg3_TKi790lDF2rHImjPXL_DVw_Etc3pRZ9VH_D8euaIj08I5BRNsedWrqVDX4lR9v_IFPNDX91_UHRtbh4e03v-pUh7q9fzrni3PQCe7W9_z-8rKWh" 
            class="share-btn linkedin" target="_blank">
-          Share on LinkedIn
+          LinkedIn
         </a>
         <button class="share-btn copy" data-url="https://jay3779.github.io/decoder.html#Longer%20Lorem%20Ipsum/eJx9VEuO2zAM3RfoHd4B0jlFuygw6KbtARiJkxCVREUk08ztC9qeway6EWxaovh-ftZx4YVnXdzxfVp0_GLzz58-f9prstWqNl0wcVBnP6HoMC7OHgtUZYoVGRdwE3_CT66oCpawrhXOfeqCjCJVagxHOBqddTHY99aMTpdBoCa3oCf8dvCQDqrokg93HkL9hFuIYaj5igp-8Cri5KID0Rr1onvn3CQmedPWUib4ASYU7V2r7gBuQf6UUL9mVwpnyIrFB1wZWDwXX3lUXuJZuGuL6eSMe4IFmzGKtPZGEoMDL3ERcoycCZOWkMd6wrdH4ekcyeRwaCnEhRwlplTyPKEDc6lUHn6CJVkyUKJNSujQlxcpQqhsvPJr15ZjUHIkFWwHtdE3YClFOCYvm3nQxRCjMrQPMYg5Y5CHgdc6FH6H2EGlhNFweUfXb8FoFHWvnuDq1JFOoclr04gpN8m0nJkYdIa0ppBx5-FJ0T3p3IZhzz0moFWu4lxccWZyYtwl1yrFaWeCH7NJobNu0H5w190keVP_OPYthN7ebXetTV4JdKXM0Jq18E2oJJrrfuiwRYzcmZaUA7eB1TYJ1mY3_nhfHhEMtiIx_JguOZi6lm6evQX1VGdz8BuXR7i2m_-TsNN7xHbTfZg3_TKi790lDF2rHImjPXL_DVw_Etc3pRZ9VH_D8euaIj08I5BRNsedWrqVDX4lR9v_IFPNDX91_UHRtbh4e03v-pUh7q9fzrni3PQCe7W9_z-8rKWh">
-          Copy URL
+          Copy Link
         </button>
       </div>
     </article>
@@ -276,14 +227,14 @@
       <div class="share-buttons">
         <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Lorem%2520Ipsum%2520Test%2FeJw9klGOmyEMhN8j5Q5zgFXuUKmrttK-dXsAL0wSq4AJ2Hnk9hV_0n2DAcb-xrzZYMWvPqPindP3u_ubdN007IVG5jqkEp_QbI2mZweA5K160zaTmBRP-A3M7KBGrNahrN2G9CWNGuO5ghHkQ8bBP1hTVQ5NYEUvYQcVvk_DjatkIyqa3FlU6kvuIRONJs-IoM3jqQurtYQpUhN9jBfl3TqKra5agdvoCBZrZbtwXAJ8QO-L0sJJ3TE4BNXGwb74Jktc6gv4WoluosT1wULzkkkLeV_SAQDxzipONpqCF2GisfYqF5vid0ZK8zmsJSESRwpumbx9cga-jDNbP6CufLShhSly0KHHY-aVJA5OdZptbI6kZWRZnA-0436GEU4Osfs65XrRLRMWG06odOJJh4THOM54S_ECkkppjTXL7p6CaJI5Ie6Mb2fNysIfBXvNh1uuHLo8Q4_Ex_FTsjsxe6VbfWa8UP9Z3zgW1qjm_i08fdY7BMyuG3Wf0o2BpOX-2G_-wcf2PXO&text=Lorem%20Ipsum%20Test" 
            class="share-btn twitter" target="_blank">
-          Share on Twitter
+          Twitter
         </a>
         <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fjay3779.github.io%2Fdecoder.html%23Lorem%2520Ipsum%2520Test%2FeJw9klGOmyEMhN8j5Q5zgFXuUKmrttK-dXsAL0wSq4AJ2Hnk9hV_0n2DAcb-xrzZYMWvPqPindP3u_ubdN007IVG5jqkEp_QbI2mZweA5K160zaTmBRP-A3M7KBGrNahrN2G9CWNGuO5ghHkQ8bBP1hTVQ5NYEUvYQcVvk_DjatkIyqa3FlU6kvuIRONJs-IoM3jqQurtYQpUhN9jBfl3TqKra5agdvoCBZrZbtwXAJ8QO-L0sJJ3TE4BNXGwb74Jktc6gv4WoluosT1wULzkkkLeV_SAQDxzipONpqCF2GisfYqF5vid0ZK8zmsJSESRwpumbx9cga-jDNbP6CufLShhSly0KHHY-aVJA5OdZptbI6kZWRZnA-0436GEU4Osfs65XrRLRMWG06odOJJh4THOM54S_ECkkppjTXL7p6CaJI5Ie6Mb2fNysIfBXvNh1uuHLo8Q4_Ex_FTsjsxe6VbfWa8UP9Z3zgW1qjm_i08fdY7BMyuG3Wf0o2BpOX-2G_-wcf2PXO" 
            class="share-btn linkedin" target="_blank">
-          Share on LinkedIn
+          LinkedIn
         </a>
         <button class="share-btn copy" data-url="https://jay3779.github.io/decoder.html#Lorem%20Ipsum%20Test/eJw9klGOmyEMhN8j5Q5zgFXuUKmrttK-dXsAL0wSq4AJ2Hnk9hV_0n2DAcb-xrzZYMWvPqPindP3u_ubdN007IVG5jqkEp_QbI2mZweA5K160zaTmBRP-A3M7KBGrNahrN2G9CWNGuO5ghHkQ8bBP1hTVQ5NYEUvYQcVvk_DjatkIyqa3FlU6kvuIRONJs-IoM3jqQurtYQpUhN9jBfl3TqKra5agdvoCBZrZbtwXAJ8QO-L0sJJ3TE4BNXGwb74Jktc6gv4WoluosT1wULzkkkLeV_SAQDxzipONpqCF2GisfYqF5vid0ZK8zmsJSESRwpumbx9cga-jDNbP6CufLShhSly0KHHY-aVJA5OdZptbI6kZWRZnA-0436GEU4Osfs65XrRLRMWG06odOJJh4THOM54S_ECkkppjTXL7p6CaJI5Ie6Mb2fNysIfBXvNh1uuHLo8Q4_Ex_FTsjsxe6VbfWa8UP9Z3zgW1qjm_i08fdY7BMyuG3Wf0o2BpOX-2G_-wcf2PXO">
-          Copy URL
+          Copy Link
         </button>
       </div>
     </article>
@@ -291,74 +242,33 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    function showToast(message, type = 'success') {
+    function showToast(message, icon = '✅') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      
-      const icon = document.createElement('div');
-      icon.className = 'toast-icon';
-      
-      const messageEl = document.createElement('div');
-      messageEl.className = 'toast-message';
-      messageEl.textContent = message;
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'toast-close';
-      closeBtn.innerHTML = '✕';
-      closeBtn.onclick = () => removeToast(toast);
-      
-      toast.appendChild(icon);
-      toast.appendChild(messageEl);
-      toast.appendChild(closeBtn);
+      toast.className = 'toast';
+      toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
       container.appendChild(toast);
-      
-      // Trigger animation
       setTimeout(() => {
-        toast.style.animation = 'slideIn 0.3s ease-out forwards';
-      }, 10);
-      
-      // Auto-remove after 3 seconds
-      setTimeout(() => removeToast(toast), 3000);
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
-    function removeToast(toast) {
-      toast.classList.add('removing');
-      setTimeout(() => toast.remove(), 300);
-    }
-
-    // Wire up copy buttons
-    document.querySelectorAll('.share-btn.copy').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        navigator.clipboard.writeText(this.getAttribute('data-url') || this.textContent).then(() => {
-          showToast('✓ Copied to clipboard!', 'success');
-        }).catch(() => {
-          showToast('Failed to copy URL', 'error');
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('copy')) {
+        const url = e.target.getAttribute('data-url');
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('Link copied to clipboard!');
         });
-      });
+      }
     });
 
-    // Wire up share buttons for feedback
-    document.querySelectorAll('.share-btn.twitter').forEach(btn => {
-      btn.addEventListener('click', function() {
-        setTimeout(() => {
-          showToast('Opening Twitter...', 'success');
-        }, 100);
-      });
-    });
-
-    document.querySelectorAll('.share-btn.linkedin').forEach(btn => {
-      btn.addEventListener('click', function() {
-        setTimeout(() => {
-          showToast('Opening LinkedIn...', 'success');
-        }, 100);
-      });
-    });
+    // Handle toast messages if redirected back from elsewhere
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('shared')) showToast('Post shared successfully!');
   </script>
 </body>
 </html>
