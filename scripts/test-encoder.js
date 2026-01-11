@@ -43,7 +43,7 @@ try {
 
   // Verify decoder base64url handling
   const decoderHtml = fs.readFileSync(path.join(__dirname, '..', 'decoder.html'), 'utf8');
-  const fnMatch = decoderHtml.match(/function base64ToUint8Array[^]*?return bytes;\s*}/);
+  const fnMatch = decoderHtml.match(/function base64ToUint8Array\([^)]*\)\s*\{[\s\S]*?return bytes;\s*}/);
 
   if (!fnMatch) {
     throw new Error('Decoder base64ToUint8Array function not found');
