@@ -67,7 +67,9 @@ pakoScript.onerror = () => {
 document.head.appendChild(pakoScript);
 
 function base64ToUint8Array(b64) {
-  const bstr = atob(b64.replace(/[^A-Za-z0-9+/=]/g, ''));
+  const normalized = b64.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+  const bstr = atob(padded);
   const bytes = new Uint8Array(bstr.length);
   for (let i = 0; i < bstr.length; i++) {
     bytes[i] = bstr.charCodeAt(i);
@@ -215,7 +217,9 @@ window.addEventListener('hashchange', decodeFromHash);
   <script>
     // Polyfill for atob that handles larger inputs
     function base64ToUint8Array(base64) {
-      const binary = atob(base64.replace(/[^A-Za-z0-9+/=]/g, ''));
+      const normalized = base64.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+      const binary = atob(padded);
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) {
         bytes[i] = binary.charCodeAt(i);
