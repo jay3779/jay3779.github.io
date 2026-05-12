@@ -1,0 +1,23 @@
+{
+  "name": "aah-cli-and-itty-bitty",
+  "version": "1.0.0",
+  "description": "A web app for sharing content in URL fragments and a CLI for generating them.",
+  "main": "aah-cli.js",
+  "scripts": {
+    "start": "node aah-cli.js",
+    "test": "jest"
+  },
+  "bin": {
+    "aah-cli": "./aah-cli.js"
+  },
+  "dependencies": {
+    "brotli-wasm": "^1.1.0",
+    "lzma-native": "^8.0.6",
+    "simple-git": "^3.28.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "terser": "^5.44.0",
+    "uglifycss": "^0.0.29"
+  }
+}
