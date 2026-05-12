@@ -11,108 +11,134 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 20px;
     }
     .decoder-container {
       background: white;
       border-radius: 12px;
-      padding: 40px;
+      padding: 30px;
       max-width: 900px;
       width: 100%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      min-height: 400px;
-      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
     }
     .back-link {
       display: inline-block;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       color: #667eea;
       text-decoration: none;
       font-weight: 600;
-      transition: opacity 0.2s;
     }
-    .back-link:hover { opacity: 0.8; text-decoration: underline; }
-    h1 { color: #333; margin-bottom: 10px; font-size: 2.2em; }
-    .metadata {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      font-size: 0.9em;
-      color: #666;
-      border-left: 4px solid #667eea;
-    }
-    .metadata code { word-break: break-all; color: #444; }
-    #output {
+    .back-link:hover { text-decoration: underline; }
+    h1 { color: #333; margin-bottom: 20px; font-size: 1.8em; }
+    #content {
       line-height: 1.6;
       color: #333;
     }
     .error-box {
       background: #fff5f5;
-      border: 1px solid #feb2b2;
       border-left: 4px solid #f56565;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 15px;
+      border-radius: 4px;
       color: #c53030;
-      margin-top: 20px;
-    }
-    .error-title { font-weight: bold; margin-bottom: 10px; font-size: 1.2em; }
-    .loading-spinner {
-      text-align: center;
-      padding: 40px;
-      color: #666;
     }
     #iframe-container {
       width: 100%;
-      height: 600px;
-      border: 1px solid #eee;
+      height: 70vh;
       border-radius: 8px;
-      margin-top: 20px;
-      background: white;
+      border: 1px solid #eee;
+      overflow: hidden;
     }
     iframe { width: 100%; height: 100%; border: none; }
+    .loading { text-align: center; padding: 40px; color: #666; }
   </style>
 </head>
 <body>
   <div class="decoder-container">
-    <a href="index.html" class="back-link"> Back to Blog</a>
-    <h1 id="postTitle">Decoding content...</h1>
+    <a href="index.html" class="back-link">← Back to Blog</a>
+    <h1 id="postTitle">Decoding...</h1>
     
-    <div id="metaContainer" class="metadata" style="display:none;">
-      <strong>Title:</strong> <span id="metaTitle"></span><br>
-      <strong>Compressed Size:</strong> <span id="metaSize"></span> bytes
-    </div>
-
-    <div id="output">
-      <div class="loading-spinner">
-        <p>Loading decompression library...</p>
+    <div id="content">
+      <div class="loading">
+        <p>Loading post content...</p>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/pako@2/dist/pako.min.js"></script>
   <script>
     function base64ToUint8Array(base64) {
-      let b64 = base64.replace(/-/g, '+').replace(/_/g, '/');
-      while (b64.length % 4) b64 += '=';
-      
-      const binary = atob(b64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
+      if (!base64) return new Uint8Array(0);
+      const b64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+      const padding = (4 - (b64.length % 4)) % 4;
+      const normalized = b64 + '='.repeat(padding);
+      try {
+        const binary = atob(normalized);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes;
+      } catch (e) {
+        console.error('Base64 decode failed:', e);
+        return new Uint8Array(0);
       }
-      return bytes;
     }
 
-    function decode() {
+    async function inflateBytes(bytes) {
+      if (typeof DecompressionStream !== 'undefined') {
+        try {
+          const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+          return await new Response(stream).text();
+        } catch (e) {
+          console.warn('DecompressionStream failed, falling back:', e);
+        }
+      }
+
+      if (typeof pako !== 'undefined') {
+        try {
+          return pako.inflate(bytes, { to: 'string' });
+        } catch (inflateError) {
+          try {
+            return pako.ungzip(bytes, { to: 'string' });
+          } catch (gzipError) {
+            console.warn('pako decompression failed:', inflateError, gzipError);
+          }
+        }
+      }
+
+      throw new Error('Could not decompress data.');
+    }
+
+    function renderContent(contentDiv, decompressed) {
+      if (decompressed.trim().startsWith('<')) {
+        contentDiv.innerHTML = '<div id="iframe-container"></div>';
+        const iframe = document.createElement('iframe');
+        document.getElementById('iframe-container').appendChild(iframe);
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(decompressed);
+        doc.close();
+        return;
+      }
+
+      if (typeof marked !== 'undefined') {
+        contentDiv.innerHTML = marked.parse(decompressed);
+        return;
+      }
+
+      contentDiv.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' +
+        decompressed.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+    }
+
+    async function decode() {
       const hash = window.location.hash.substring(1);
-      const output = document.getElementById('output');
+      const contentDiv = document.getElementById('content');
       const titleEl = document.getElementById('postTitle');
       
       if (!hash) {
-        output.innerHTML = '<div class="error-box"><div class="error-title">No Data</div>Please provide a compressed itty-bitty URL.</div>';
+        contentDiv.innerHTML = '<div class="error-box">No post data found in URL.</div>';
         titleEl.textContent = 'Error';
         return;
       }
@@ -120,58 +146,29 @@
       try {
         const parts = hash.split('/');
         let title = 'Untitled Post';
-        let compressedB64 = hash;
+        let payload = hash;
 
         if (parts.length > 1) {
           title = decodeURIComponent(parts[0]);
-          compressedB64 = parts.slice(1).join('/');
+          payload = parts.slice(1).join('/');
         }
 
         titleEl.textContent = title;
-        const compressedBytes = base64ToUint8Array(compressedB64);
+        const bytes = base64ToUint8Array(payload);
         
-        document.getElementById('metaContainer').style.display = 'block';
-        document.getElementById('metaTitle').textContent = title;
-        document.getElementById('metaSize').textContent = compressedBytes.length;
-
-        let decompressed;
-        try {
-          decompressed = pako.inflate(compressedBytes, { to: 'string' });
-        } catch (e) {
-          try {
-            decompressed = pako.ungzip(compressedBytes, { to: 'string' });
-          } catch (e2) {
-            throw new Error('Decompression failed. The data may be invalid or corrupted.');
-          }
+        if (bytes.length === 0) {
+          throw new Error('Failed to decode post data (invalid base64).');
         }
-
-        if (decompressed.trim().toLowerCase().startsWith('<!doctype') || decompressed.trim().toLowerCase().startsWith('<html')) {
-          output.innerHTML = '<div id="iframe-container"></div>';
-          const container = document.getElementById('iframe-container');
-          const iframe = document.createElement('iframe');
-          container.appendChild(iframe);
-          
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          doc.open();
-          doc.write(decompressed);
-          doc.close();
-        } else {
-          output.innerHTML = '<div style="white-space: pre-wrap; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px solid #eee;">' + 
-            decompressed.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-
-      } catch (error) {
-        output.innerHTML = '<div class="error-box"><div class="error-title">Decode Error</div>' + error.message + '</div>';
+        
+        const decompressed = await inflateBytes(bytes);
+        renderContent(contentDiv, decompressed);
+      } catch (err) {
+        contentDiv.innerHTML = '<div class="error-box"><strong>Decode Error:</strong> ' + err.message + '</div>';
         titleEl.textContent = 'Error';
       }
     }
 
-    if (typeof pako !== 'undefined') {
-      decode();
-    } else {
-      window.onload = decode;
-    }
-    
+    window.onload = decode;
     window.onhashchange = decode;
   </script>
 </body>

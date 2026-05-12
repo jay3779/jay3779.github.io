@@ -11,6 +11,10 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+function getBaseUrl() {
+  return process.env.ITTY_BLOG_BASE_URL || 'https://how.bitty.site';
+}
+
 /**
  * Parse commit message for itty-bitty metadata
  * Format: [itty:base64_payload] Title: ... | Desc: ...
@@ -35,7 +39,7 @@ function parseCommitMetadata(message) {
 
   // Build URL
   const titleEncoded = encodeURIComponent(title.slice(0, 50));
-  const url = `https://how.bitty.site/#${titleEncoded}/${payload}`;
+  const url = `${getBaseUrl()}/#${titleEncoded}/${payload}`;
 
   return {
     title,

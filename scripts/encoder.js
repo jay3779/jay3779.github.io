@@ -8,6 +8,10 @@ const zlib = require('zlib');
 const fs = require('fs');
 const path = require('path');
 
+function getBaseUrl() {
+  return process.env.ITTY_BLOG_BASE_URL || 'https://how.bitty.site';
+}
+
 /**
  * Compress and encode markdown into itty-bitty format
  * @param {string} markdown - Raw markdown text
@@ -46,7 +50,7 @@ function encodeMarkdown(markdown, title = '') {
 
   // Build itty-bitty URL with title
   const titleEncoded = encodeURIComponent(title.slice(0, 50));
-  const ittyUrl = `https://how.bitty.site/#${titleEncoded}/${base64url}`;
+  const ittyUrl = `${getBaseUrl()}/#${titleEncoded}/${base64url}`;
 
   return {
     url: ittyUrl,

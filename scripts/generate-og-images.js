@@ -1,7 +1,7 @@
 /**
  * Generate OG Preview Images using Satori
- * Creates 1200x630px PNG images for social media sharing
- * 
+ * Creates 1200x630px SVG images for social media sharing until raster output is wired.
+ *
  * Requires: npm install satori sharp
  */
 
@@ -10,7 +10,7 @@ const path = require('path');
 
 /**
  * Note: Satori requires complex setup with fonts.
- * For MVP, create placeholder PNG images.
+ * For MVP, create placeholder SVG images.
  * Full implementation requires:
  * - npm install satori sharp
  * - Roboto font files
@@ -34,7 +34,10 @@ async function generateOGImages() {
 
   console.log(`Generating ${posts.length} OG preview images...`);
 
-  // For MVP: Create placeholder SVG/PNG
+  const sitePreviewPath = path.join(ogDir, 'index.svg');
+  createPlaceholderImage(sitePreviewPath, 'Itty-Bitty Blog');
+
+  // For MVP: Create placeholder SVG
   // Full production requires:
   // 1. npm install satori sharp @resvg/resvg-js
   // 2. Font setup with Roboto TTF
@@ -42,7 +45,7 @@ async function generateOGImages() {
   
   for (const post of posts) {
     const slug = post.title.toLowerCase().replace(/\s+/g, '-').slice(0, 30);
-    const imagePath = path.join(ogDir, `${slug}.png`);
+    const imagePath = path.join(ogDir, `${slug}.svg`);
     
     // Create placeholder (in production, use Satori)
     createPlaceholderImage(imagePath, post.title);
@@ -52,11 +55,10 @@ async function generateOGImages() {
 }
 
 /**
- * Placeholder: Create minimal SVG → PNG
+ * Placeholder: Create minimal SVG
  * In production, replace with Satori
  */
 function createPlaceholderImage(filePath, title) {
-  // For now, create a minimal SVG file as placeholder
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -74,7 +76,7 @@ function createPlaceholderImage(filePath, title) {
   </text>
 </svg>`;
 
-  fs.writeFileSync(filePath.replace('.png', '.svg'), svg, 'utf8');
+  fs.writeFileSync(filePath, svg, 'utf8');
   console.log(`  Created placeholder: ${path.basename(filePath)}`);
 }
 

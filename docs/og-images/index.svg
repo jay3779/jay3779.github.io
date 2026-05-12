@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Itty-Bitty Blog</title>
+  <desc id="desc">Default social preview image for the Itty-Bitty Blog</desc>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grad)"/>
+  <circle cx="980" cy="110" r="180" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="190" cy="560" r="220" fill="rgba(255,255,255,0.06)"/>
+  <text x="80" y="245" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700">Itty-Bitty Blog</text>
+  <text x="80" y="330" fill="#dbeafe" font-family="Arial, Helvetica, sans-serif" font-size="30">Shareable posts in compressed URLs</text>
+  <text x="80" y="570" fill="#bfdbfe" font-family="Arial, Helvetica, sans-serif" font-size="24">Private launch preview</text>
+</svg>

@@ -7,6 +7,19 @@
 const fs = require('fs');
 const path = require('path');
 
+function getSiteOrigin() {
+  return process.env.ITTY_BLOG_SITE_ORIGIN || 'https://jay3779.github.io';
+}
+
+function getOgImagePath() {
+  return process.env.ITTY_BLOG_OG_IMAGE || 'og-images/index.svg';
+}
+
+function buildPublicUrl(relativePath) {
+  const origin = getSiteOrigin().replace(/\/$/, '');
+  return `${origin}/${relativePath.replace(/^\//, '')}`;
+}
+
 /**
  * Generate blog index HTML
  * @param {Array} posts - Array of post objects with title, url, description, date
@@ -16,7 +29,7 @@ function generateIndexHTML(posts) {
     .map(post => {
       // Ensure post uses local decoder
       const hash = post.url.includes('#') ? post.url.split('#')[1] : post.url;
-      const localUrl = `/decoder.html#${hash}`;
+      const localUrl = `decoder.html#${hash}`;
       
       return `
     <article class="post-card">
@@ -27,15 +40,15 @@ function generateIndexHTML(posts) {
         <span class="compression">${post.compressedSize} bytes</span>
       </p>
       <div class="share-buttons">
-        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent('https://jay3779.github.io' + localUrl)}&text=${encodeURIComponent(post.title)}" 
+        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(buildPublicUrl(localUrl))}&text=${encodeURIComponent(post.title)}" 
            class="share-btn twitter" target="_blank">
           Twitter
         </a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://jay3779.github.io' + localUrl)}" 
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(buildPublicUrl(localUrl))}" 
            class="share-btn linkedin" target="_blank">
           LinkedIn
         </a>
-        <button class="share-btn copy" data-url="https://jay3779.github.io${localUrl}">
+        <button class="share-btn copy" data-url="${buildPublicUrl(localUrl)}">
           Copy Link
         </button>
       </div>
@@ -52,7 +65,7 @@ function generateIndexHTML(posts) {
   <title>Itty-Bitty Blog</title>
   <meta property="og:title" content="Itty-Bitty Blog">
   <meta property="og:description" content="Blog platform using shareable compressed URLs">
-  <meta property="og:image" content="/og-images/index.png">
+  <meta property="og:image" content="${getOgImagePath()}">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
