@@ -1,0 +1,71 @@
+{
+  "name": "vscode-itty-blog",
+  "displayName": "Itty-Bitty Blog",
+  "description": "Create shareable blog posts via VS Code chat using compressed URLs",
+  "version": "0.1.0",
+  "publisher": "itty-blog",
+  "engines": {
+    "vscode": "^1.102.0"
+  },
+  "categories": [
+    "Other",
+    "Notebooks"
+  ],
+  "icon": "icons/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/vscode-itty-blog"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ittyBlog.createPost",
+        "title": "Create Itty-Bitty Blog Post",
+        "category": "Blog"
+      },
+      {
+        "command": "ittyBlog.encodeSelection",
+        "title": "Encode Selection as Itty-Bitty URL",
+        "category": "Blog"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "ittyBlog.encodeSelection",
+          "group": "1_modification",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "mcpServers": {
+      "itty-blog": {
+        "command": "node",
+        "args": [
+          "${extensionPath}/dist/mcp-server.js"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "compile": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --platform=node --target=node18 && esbuild src/mcp-server.ts --bundle --outfile=dist/mcp-server.js --platform=node --target=node18",
+    "watch": "npm run compile -- --watch",
+    "package": "vsce package",
+    "build": "npm run compile && npm run package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.102.0",
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.20.0",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "simple-git": "^3.20.0"
+  },
+  "activationEvents": [
+    "onCommand:ittyBlog.createPost",
+    "onCommand:ittyBlog.encodeSelection",
+    "onChat:ittyBlog"
+  ]
+}

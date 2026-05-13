@@ -1,0 +1,24 @@
+{
+  "name": "itty-bitty-blog",
+  "version": "1.0.0",
+  "description": "Blog platform using itty-bitty compressed URLs",
+  "main": "scripts/encoder.js",
+  "scripts": {
+    "encode": "node scripts/encoder.js",
+    "build": "node scripts/build-index.js",
+    "test": "node scripts/test-encoder.js"
+  },
+  "dependencies": {
+    "simple-git": "^3.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "keywords": [
+    "itty-bitty",
+    "blog",
+    "static-site"
+  ],
+  "author": "",
+  "license": "MIT"
+}
