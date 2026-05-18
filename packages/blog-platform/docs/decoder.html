@@ -88,24 +88,35 @@
     }
 
     async function inflateBytes(bytes) {
+      // Try native DecompressionStream with a few algorithm variants
       if (typeof DecompressionStream !== 'undefined') {
-        try {
-          const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
-          return await new Response(stream).text();
-        } catch (e) {
-          console.warn('DecompressionStream failed, falling back:', e);
+        const algos = ['deflate-raw', 'deflate', 'gzip'];
+        for (const algo of algos) {
+          try {
+            const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream(algo));
+            return await new Response(stream).text();
+          } catch (e) {
+            console.warn(`DecompressionStream(${algo}) failed:`, e);
+          }
         }
       }
 
+      // Fallback to pako with raw/zlib/gzip attempts
       if (typeof pako !== 'undefined') {
+        try {
+          return pako.inflateRaw(bytes, { to: 'string' });
+        } catch (rawErr) {
+          console.warn('pako.inflateRaw failed:', rawErr);
+        }
         try {
           return pako.inflate(bytes, { to: 'string' });
         } catch (inflateError) {
-          try {
-            return pako.ungzip(bytes, { to: 'string' });
-          } catch (gzipError) {
-            console.warn('pako decompression failed:', inflateError, gzipError);
-          }
+          console.warn('pako.inflate failed:', inflateError);
+        }
+        try {
+          return pako.ungzip(bytes, { to: 'string' });
+        } catch (gzipError) {
+          console.warn('pako.ungzip failed:', gzipError);
         }
       }
 

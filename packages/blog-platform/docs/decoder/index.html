@@ -67,7 +67,11 @@ pakoScript.onerror = () => {
 document.head.appendChild(pakoScript);
 
 function base64ToUint8Array(b64) {
-  const bstr = atob(b64.replace(/[^A-Za-z0-9+/=]/g, ''));
+  // Normalize URL-safe base64 to standard base64
+  const normalized = b64.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = (4 - (normalized.length % 4)) % 4;
+  const padded = normalized + '='.repeat(pad);
+  const bstr = atob(padded.replace(/[^A-Za-z0-9+/=]/g, ''));
   const bytes = new Uint8Array(bstr.length);
   for (let i = 0; i < bstr.length; i++) {
     bytes[i] = bstr.charCodeAt(i);
@@ -75,7 +79,43 @@ function base64ToUint8Array(b64) {
   return bytes;
 }
 
-function decodeFromHash() {
+async function decompressBytes(bytes) {
+  // Try native DecompressionStream variants first (raw deflate, zlib deflate, gzip)
+  if (typeof DecompressionStream !== 'undefined') {
+    const algos = ['deflate-raw', 'deflate', 'gzip'];
+    for (const algo of algos) {
+      try {
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream(algo));
+        return await new Response(stream).text();
+      } catch (e) {
+        console.warn(`DecompressionStream(${algo}) failed:`, e);
+      }
+    }
+  }
+
+  // Fallback to pako (try inflateRaw, inflate (zlib), then ungzip)
+  if (typeof pako !== 'undefined') {
+    try {
+      return pako.inflateRaw(bytes, { to: 'string' });
+    } catch (e) {
+      console.warn('pako.inflateRaw failed:', e);
+    }
+    try {
+      return pako.inflate(bytes, { to: 'string' });
+    } catch (e) {
+      console.warn('pako.inflate failed:', e);
+    }
+    try {
+      return pako.ungzip(bytes, { to: 'string' });
+    } catch (e) {
+      console.warn('pako.ungzip failed:', e);
+    }
+  }
+
+  throw new Error('Could not decompress data.');
+}
+
+async function decodeFromHash() {
   const hash = window.location.hash.substring(1);
   const loader = document.getElementById('loader');
   const iframe = document.getElementById('iframe');
@@ -96,17 +136,7 @@ function decodeFromHash() {
     }
 
     const compressedBytes = base64ToUint8Array(compressedB64);
-    
-    let decompressed;
-    try {
-      decompressed = pako.inflate(compressedBytes, { to: 'string' });
-    } catch(e) {
-      try {
-        decompressed = pako.ungzip(compressedBytes, { to: 'string' });
-      } catch(e2) {
-        throw new Error('Decompression failed: ' + e2.message);
-      }
-    }
+    const decompressed = await decompressBytes(compressedBytes);
 
     document.title = title + ' - itty bitty';
     loader.classList.add('hidden');
